@@ -1,0 +1,98 @@
+package com.example.myapplication;
+
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+public class Main3Activity extends AppCompatActivity {
+    EditText e1,e2,e3,e4,e5,e6;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main3);
+        final ArrayList<String> arrayList=new ArrayList<String>();
+        arrayList.add(e1.getText().toString());
+        arrayList.add(e2.getText().toString());
+        arrayList.add(e3.getText().toString());
+        arrayList.add(e4.getText().toString());
+        arrayList.add(e5.getText().toString());
+        arrayList.add(e6.getText().toString());
+        //Date currentTime = Calendar.getInstance().getTime();
+        TextView textView=findViewById(R.id.t3);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+        String currentDateandTime = sdf.format(new Date());
+        //textView.setText(currentDateandTime);
+        arrayList.add(currentDateandTime);
+        Button b1=(Button)findViewById(R.id.button);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Main3Activity.this, "You are checked in", Toast.LENGTH_SHORT).show();
+
+
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{ arrayList.get(4)});
+                email.putExtra(Intent.EXTRA_SUBJECT, "Visitor details");
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(0));
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(1));
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(2));
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(6));
+
+                //need this to prompts email client only
+                email.setType("message/rfc822");
+
+                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                PendingIntent pi=PendingIntent.getActivity(getApplicationContext(), 0, intent,0);
+
+                //Get the SmsManager instance and call the sendTextMessage method to send message
+                SmsManager sms=SmsManager.getDefault();
+                sms.sendTextMessage(arrayList.get(5), null, arrayList.get(0)+arrayList.get(1)+arrayList.get(2)+arrayList.get(6), pi,null);
+
+                Toast.makeText(getApplicationContext(), "Message Sent successfully!",
+                        Toast.LENGTH_LONG).show();
+
+            }
+        });
+        Button b2=(Button)findViewById(R.id.button1);
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+                String currentDateandTime1 = sdf1.format(new Date());
+                arrayList.add(currentDateandTime1);
+
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{ arrayList.get(1)});
+                email.putExtra(Intent.EXTRA_SUBJECT, "your stay  details");
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(0));
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(1));
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(2));
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(6));
+                email.putExtra(Intent.EXTRA_TEXT, arrayList.get(7));
+
+                //need this to prompts email client only
+                email.setType("message/rfc822");
+
+                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+            }
+        });
+}
+}
